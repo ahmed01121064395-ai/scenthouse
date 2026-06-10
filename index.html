@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دار العطور | Scent House - الفخامة والرقي في عالم العطور</title>
+    
+    <!-- Meta Descriptions for SEO -->
+    <meta name="description" content="اكتشف المجموعة الفاخرة من العطور الرجالية والنسائية والمشتركة وبوكسات الهدايا الراقية في Scent House. فخامة لا تضاهى وثبات يدوم طويلاً.">
+    <meta name="keywords" content="عطور فاخرة, عطور رجالية, عطور نسائية, عطور مشتركة, بوكسات هدايا, العود الملكي, عطر عربي, Scent House">
+    <meta name="author" content="Scent House">
+    
+    <!-- Google Fonts & FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Link to global stylesheets -->
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+
+    <!-- Sticky Glassmorphic Header -->
+    <header id="main-header">
+        <div class="header-container">
+            <!-- Brand Logo and Name -->
+            <div class="logo-container" onclick="app.navigateTo('home')">
+                <img src="./m.jpg" alt="شعار Scent House" class="logo-img" onerror="this.src='https://placehold.co/100x100/121212/D4AF37?text=Scent+House'">
+                <span class="brand-title gold-text">SCENT HOUSE</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item active" data-view="home"><a onclick="app.navigateTo('home')">الرئيسية</a></li>
+                    <li class="nav-item" data-view="shop-men"><a onclick="app.navigateToCategory('men')">العطور الرجالية</a></li>
+                    <li class="nav-item" data-view="shop-women"><a onclick="app.navigateToCategory('women')">العطور النسائية</a></li>
+                    <li class="nav-item" data-view="shop-unisex"><a onclick="app.navigateToCategory('unisex')">العطور المشتركة</a></li>
+                    <li class="nav-item" data-view="shop-gifts"><a onclick="app.navigateToCategory('gifts')">بوكسات الهدايا</a></li>
+                    <li class="nav-item" data-view="shop"><a onclick="app.navigateTo('shop')">المتجر</a></li>
+                    <li class="nav-item" data-view="about"><a onclick="app.navigateTo('about')">من نحن</a></li>
+                    <li class="nav-item" data-view="contact"><a onclick="app.navigateTo('contact')">تواصل معنا</a></li>
+                </ul>
+            </nav>
+
+            <!-- User Quick Actions & Dev/Admin Triggers -->
+            <div class="nav-actions">
+                
+                <!-- Social media icons in header -->
+                <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="icon-btn" style="color:var(--primary-gold); margin-left: 8px;" title="إنستغرام"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@scenthouse06?_r=1&_t=ZS-976Aee7qkxs" target="_blank" rel="noopener noreferrer" class="icon-btn" style="color:var(--primary-gold); margin-left: 8px;" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.facebook.com/share/14eGj7rQq88/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="icon-btn" style="color:var(--primary-gold); margin-left: 15px;" title="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+
+                <!-- Wishlist Toggle -->
+                <button class="icon-btn" onclick="app.showWishlistToast()" title="المفضلة">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="badge" id="wishlist-badge-count">0</span>
+                </button>
+                
+                <!-- Cart Toggle -->
+                <button class="icon-btn" onclick="app.toggleCartDrawer(true)" title="سلة المشتريات">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="badge" id="cart-badge-count">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cart Sliding Drawer (UI Template) -->
+    <div class="cart-drawer-backdrop" id="cart-drawer-overlay" onclick="app.toggleCartDrawer(false)">
+        <div class="cart-drawer" onclick="event.stopPropagation()">
+            <div class="cart-drawer-header">
+                <h3>سلة المشتريات (<span class="english-num" id="cart-drawer-items-count">0</span>)</h3>
+                <button class="close-drawer-btn" onclick="app.toggleCartDrawer(false)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Drawer Body containing Cart Items -->
+            <div class="cart-drawer-body" id="cart-drawer-items-list">
+                <!-- Loaded dynamically via app.js -->
+            </div>
+            
+            <!-- Drawer Footer Summary -->
+            <div class="cart-drawer-footer">
+                <!-- Promo Code -->
+                <div class="coupon-box-drawer">
+                    <input type="text" placeholder="كود الخصم (SCENT10)" id="cart-promo-input" class="premium-input">
+                    <button class="btn-apply-coupon" onclick="app.applyPromoCode()">تطبيق</button>
+                </div>
+                
+                <div class="cart-summary-line">
+                    <span>المجموع الفرعي:</span>
+                    <span><span class="english-num" id="cart-subtotal-val">0.00</span> ر.س</span>
+                </div>
+                <div class="cart-summary-line" id="discount-row" style="display:none; color:#2ecc71;">
+                    <span>الخصم (<span id="discount-percent-label">10</span>%):</span>
+                    <span>-<span class="english-num" id="cart-discount-val">0.00</span> ر.س</span>
+                </div>
+                <div class="cart-summary-total">
+                    <span>الإجمالي الكلي:</span>
+                    <span class="gold-text"><span class="english-num" id="cart-total-val">0.00</span> ر.س</span>
+                </div>
+                
+                <div class="cart-drawer-actions">
+                    <button class="btn-premium btn-drawer-full" onclick="app.proceedToCheckout()">
+                        إتمام الطلب <i class="fa-solid fa-arrow-left" style="margin-right: 5px;"></i>
+                    </button>
+                    <button class="btn-outline-gold btn-drawer-full" onclick="app.toggleCartDrawer(false)">
+                        مواصلة التسوق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dynamic Application Container -->
+    <main class="main-content" id="main-app">
+
+        <!-- ==================== VIEW: HOMEPAGE ==================== -->
+        <section class="view-section active" id="view-home">
+            <!-- Premium Fullscreen Hero Banner -->
+            <div class="hero-section" style="background-image: url('./background.jpg');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title gold-text">عطرٌ يليقُ بفخامتِك</h1>
+                    <p class="hero-slogan">اكتشف أرقى زجاجات العطور النادرة والروائح الساحرة المصممة خصيصاً لذوقك الرفيع</p>
+                    <div class="hero-buttons">
+                        <button class="btn-premium" onclick="app.navigateTo('shop')">تسوق الآن</button>
+                        <button class="btn-outline-gold" onclick="app.navigateToCategory('gifts')">اكتشف المجموعة</button>
+                    </div>
+                </div>
+                
+                <!-- Bottom Feature Bar -->
+                <div class="hero-features-bar">
+                    <div class="hero-features-container">
+                        <div class="feature-item">
+                            <i class="fa-solid fa-gem"></i>
+                            <span>مكونات طبيعية نادرة ومختارة</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-crown"></i>
+                            <span>فخامة وروائح لا تضاهى</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            <span>ثبات وتأثير عالي يدوم طويلاً</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-truck-fast"></i>
+                            <span>شحن وتوصيل فاخر وسريع</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Categories Section -->
+            <div class="section-wrapper">
+                <div class="section-header">
+                    <h2>الفئات الفاخرة</h2>
+                    <p>تسوق حسب تصاميم المجموعات العطرية الملائمة لذوقك</p>
+                </div>
+                <div class="categories-grid">
+                    <!-- Category Men -->
+                    <div class="category-card" onclick="app.navigateToCategory('men')">
+                        <div class="category-card-bg" style="background-image: url('https://images.unsplash.com/photo-1615655404745-a10c24db2ac1?q=80&w=600&auto=format&fit=crop');"></div>
+                        <div class="category-card-overlay">
+                            <h3 class="category-card-title">العطور الرجالية</h3>
+                            <p class="category-card-desc">قوة، ثقة وجاذبية عطرية كلاسيكية</p>
+                            <span class="category-card-link">تسوق الآن <i class="fa-solid fa-chevron-left"></i></span>
+                        </div>
+                    </div>
+                    <!-- Category Women -->
+                    <div class="category-card" onclick="app.navigateToCategory('women')">
+                        <div class="category-card-bg" style="background-image: url('./photo_2026-06-10_19-34-55.jpg');"></div>
+                        <div class="category-card-overlay">
+                            <h3 class="category-card-title">العطور النسائية</h3>
+                            <p class="category-card-desc">سحر، نعومة ورقة في كل التفاصيل</p>
+                            <span class="category-card-link">تسوق الآن <i class="fa-solid fa-chevron-left"></i></span>
+                        </div>
+                    </div>
+                    <!-- Category Shared -->
+                    <div class="category-card" onclick="app.navigateToCategory('unisex')">
+                        <div class="category-card-bg" style="background-image: url('https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop');"></div>
+                        <div class="category-card-overlay">
+                            <h3 class="category-card-title">العطور المشتركة</h3>
+                            <p class="category-card-desc">مزيج متناغم يناسب كافة المناسبات والأذواق</p>
+                            <span class="category-card-link">تسوق الآن <i class="fa-solid fa-chevron-left"></i></span>
+                        </div>
+                    </div>
+                    <!-- Category Gifts -->
+                    <div class="category-card" onclick="app.navigateToCategory('gifts')">
+                        <div class="category-card-bg" style="background-image: url('https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=600&auto=format&fit=crop');"></div>
+                        <div class="category-card-overlay">
+                            <h3 class="category-card-title">بوكسات الهدايا</h3>
+                            <p class="category-card-desc">تغليف فاخر وبوكسات مناسبات مخصصة لأحبائك</p>
+                            <span class="category-card-link">اكتشف التغليف <i class="fa-solid fa-chevron-left"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Sellers Grid -->
+            <div class="section-wrapper">
+                <div class="section-header">
+                    <h2>الأكثر مبيعاً</h2>
+                    <p>العطور الأكثر تفضيلاً وطلباً من قبل متذوقي الفخامة</p>
+                </div>
+                <div class="product-grid" id="home-best-sellers-grid">
+                    <!-- Dynamic rendering from app.js -->
+                </div>
+            </div>
+
+            <!-- Short Story/About Scent House Panel -->
+            <div class="about-panel">
+                <div class="about-panel-container">
+                    <div class="about-panel-img-box">
+                        <img src="./photo_2026-06-10_19-34-55.jpg" alt="قصة Scent House" class="about-panel-img">
+                    </div>
+                    <div class="about-panel-text">
+                        <span class="gold-text">قصة الدار والعطور الفاخرة</span>
+                        <h3 class="gold-text">عطور تُكتب بعبق التاريخ وتنبض بالحاضر</h3>
+                        <p>تأسس Scent House ليكون صرحاً للفخامة والتميز، حيث نجمع بين عبق الشرق الأصيل ونفحات الغرب العصرية. كل عطر لدينا يحكي قصة فخر واعتزاز، نختار مكوناتنا بعناية فائقة من أندر حقول الأزهار والغابات لنمنحك زجاجة عطرية تدوم وتجذب الحواس وتناسب كبريائك.</p>
+                        <button class="btn-premium" onclick="app.navigateTo('about')">اقرأ المزيد عنا</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Arrivals Grid -->
+            <div class="section-wrapper">
+                <div class="section-header">
+                    <h2>أحدث الإصدارات</h2>
+                    <p>روائح جديدة تنضم لأسطول عطورنا الفاخرة، استكشف التميز الآن</p>
+                </div>
+                <div class="product-grid" id="home-new-arrivals-grid">
+                    <!-- Dynamic rendering from app.js -->
+                </div>
+            </div>
+
+            <!-- Customer Testimonials (Slider) -->
+            <div class="testimonial-section">
+                <div class="section-header">
+                    <h2>آراء عملاء Scent House</h2>
+                    <p>شهادات نعتز بها من عملائنا الراقين حول جودة وثبات عطورنا</p>
+                </div>
+                <div class="testimonial-container">
+                    <div class="testimonial-stars" id="testimonial-stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="testimonial-quote" id="testimonial-text">"عطر سحر الحب لا يقارن، ثبات لا يقل عن يومين ورائحة غنية ومليئة بالجاذبية. سرعة التوصيل والتغليف الفاخر تجعل منه الهدية المثالية بكل جدارة!"</p>
+                    <h4 class="testimonial-author" id="testimonial-author">عبدالرحمن العتيبي</h4>
+                    <span class="testimonial-role" id="testimonial-role">عميل متميز</span>
+                    
+                    <!-- Navigation Controls -->
+                    <button class="testimonial-arrow arrow-next" onclick="app.nextTestimonial()">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="testimonial-arrow arrow-prev" onclick="app.prevTestimonial()">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Social Media Engagement Section -->
+            <div class="social-section">
+                <div class="section-header">
+                    <h2>تابعنا على مواقع التواصل</h2>
+                    <p>انضم لعائلتنا الراقية واكتشف كواليس إنتاج عطورنا والخصومات الحصرية</p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1000px; margin: 30px auto 0; padding: 0 20px;">
+                    <!-- Facebook Card -->
+                    <div class="value-card" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 250px;">
+                        <div>
+                            <div class="value-icon" style="color: #1877F2;"><i class="fa-brands fa-facebook"></i></div>
+                            <h4 class="value-title">Scent House</h4>
+                            <p class="value-desc" style="font-family: var(--font-english); font-weight:700; color:var(--primary-gold); font-size:1.1rem; margin-bottom:8px;">50K+ Followers</p>
+                            <p class="value-desc">واكب أحدث العروض والخصومات والبوكسات الخاصة بالدار</p>
+                        </div>
+                        <a href="https://www.facebook.com/share/14eGj7rQq88/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="btn-outline-gold" style="width:100%; text-align:center; padding: 8px 15px; font-size:0.85rem; text-decoration:none; display:block; margin-top:15px;">متابعة الصفحة <i class="fa-solid fa-arrow-up-right" style="margin-right:5px;"></i></a>
+                    </div>
+                    
+                    <!-- Instagram Card -->
+                    <div class="value-card" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 250px;">
+                        <div>
+                            <div class="value-icon" style="color: #E1306C;"><i class="fa-brands fa-instagram"></i></div>
+                            <h4 class="value-title">scent.house9</h4>
+                            <p class="value-desc" style="font-family: var(--font-english); font-weight:700; color:var(--primary-gold); font-size:1.1rem; margin-bottom:8px;">120K+ Followers</p>
+                            <p class="value-desc">شاهد تفاصيل الفخامة اليومية، والستوريات التفاعلية اليومية</p>
+                        </div>
+                        <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="btn-outline-gold" style="width:100%; text-align:center; padding: 8px 15px; font-size:0.85rem; text-decoration:none; display:block; margin-top:15px;">متابعة الحساب <i class="fa-solid fa-arrow-up-right" style="margin-right:5px;"></i></a>
+                    </div>
+                    
+                    <!-- TikTok Card -->
+                    <div class="value-card" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 250px;">
+                        <div>
+                            <div class="value-icon" style="color: #FFFFFF;"><i class="fa-brands fa-tiktok"></i></div>
+                            <h4 class="value-title">@scenthouse06</h4>
+                            <p class="value-desc" style="font-family: var(--font-english); font-weight:700; color:var(--primary-gold); font-size:1.1rem; margin-bottom:8px;">85K+ Followers</p>
+                            <p class="value-desc">استكشف فيديوهات الكواليس ومراجعات العطور ونسب الثبات</p>
+                        </div>
+                        <a href="https://www.tiktok.com/@scenthouse06?_r=1&_t=ZS-976Aee7qkxs" target="_blank" rel="noopener noreferrer" class="btn-outline-gold" style="width:100%; text-align:center; padding: 8px 15px; font-size:0.85rem; text-decoration:none; display:block; margin-top:15px;">متابعة القناة <i class="fa-solid fa-arrow-up-right" style="margin-right:5px;"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instagram Feed Grid Section -->
+            <div class="section-wrapper" style="margin-top:60px;">
+                <div class="section-header">
+                    <h2>إلهام وفخامة يومية</h2>
+                    <p>أبرز لقطات عطورنا وجلسات التصوير الحصرية عبر إنستغرام <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="gold-text" style="text-decoration:none;">@scent.house9</a></p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="category-card" style="height:250px;">
+                        <div class="category-card-bg" style="background-image: url('./photo_2026-06-10_19-34-55.jpg');"></div>
+                        <div class="category-card-overlay" style="background: rgba(10,10,10,0.4); justify-content:center; align-items:center; opacity:0; transition:var(--transition-quick);">
+                            <i class="fa-brands fa-instagram" style="font-size:2rem; color:var(--primary-gold);"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="category-card" style="height:250px;">
+                        <div class="category-card-bg" style="background-image: url('https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop');"></div>
+                        <div class="category-card-overlay" style="background: rgba(10,10,10,0.4); justify-content:center; align-items:center; opacity:0; transition:var(--transition-quick);">
+                            <i class="fa-brands fa-instagram" style="font-size:2rem; color:var(--primary-gold);"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="category-card" style="height:250px;">
+                        <div class="category-card-bg" style="background-image: url('https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop');"></div>
+                        <div class="category-card-overlay" style="background: rgba(10,10,10,0.4); justify-content:center; align-items:center; opacity:0; transition:var(--transition-quick);">
+                            <i class="fa-brands fa-instagram" style="font-size:2rem; color:var(--primary-gold);"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="category-card" style="height:250px;">
+                        <div class="category-card-bg" style="background-image: url('./photo_2026-06-10_19-34-58.jpg');"></div>
+                        <div class="category-card-overlay" style="background: rgba(10,10,10,0.4); justify-content:center; align-items:center; opacity:0; transition:var(--transition-quick);">
+                            <i class="fa-brands fa-instagram" style="font-size:2rem; color:var(--primary-gold);"></i>
+                        </div>
+                    </a>
+                </div>
+                <style>
+                    .category-card:hover .category-card-overlay {
+                        opacity: 1 !important;
+                    }
+                </style>
+            </div>
+
+            <!-- Newsletter Subscription Form -->
+            <div class="newsletter-section">
+                <div class="newsletter-box">
+                    <h3 class="gold-text">انضم لقائمة النخبة البريدية</h3>
+                    <p>احصل على عروض حصرية، وصول مبكر للعطور الجديدة، ومقالات حول ثقافة العطور الراقية.</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="أدخل عنوان بريدك الإلكتروني" id="newsletter-email" class="premium-input">
+                        <button class="btn-premium" onclick="app.subscribeNewsletter()">اشتراك</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW: SHOP / CATALOG ==================== -->
+        <section class="view-section" id="view-shop">
+            <div class="info-page-header">
+                <h1 id="shop-view-title" class="gold-text">معرض العطور الفاخرة</h1>
+                <p>تصفح كتالوج العطور الفخم واختر النفحات العطرية الملائمة لأسلوب حياتك</p>
+            </div>
+            
+            <div class="section-wrapper">
+                <!-- Shop Main Search & Sort Bar -->
+                <div class="shop-main-controls">
+                    <div class="search-box-wrap">
+                        <input type="text" placeholder="البحث عن عطر، مكون أو بوكس..." id="shop-search-input" class="search-input" oninput="app.filterProducts()">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    </div>
+                    <div class="sort-container">
+                        <span>ترتيب حسب:</span>
+                        <select class="select-premium" id="shop-sort-select" onchange="app.sortProducts()">
+                            <option value="featured">الأكثر مبيعاً</option>
+                            <option value="newest">الأحدث</option>
+                            <option value="rating">الأعلى تقييماً</option>
+                            <option value="price-asc">السعر: من الأقل إلى الأعلى</option>
+                            <option value="price-desc">السعر: من الأعلى إلى الأقل</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Main Grid and Filters -->
+                <div class="shop-layout">
+                    <!-- Filters Sidebar -->
+                    <aside class="shop-sidebar">
+                        <!-- Category Filters -->
+                        <div class="filter-group">
+                            <h4 class="filter-title">التصنيفات</h4>
+                            <div class="filter-options">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-category" value="men" id="filter-cat-men" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span>عطور رجالية</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-category" value="women" id="filter-cat-women" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span>عطور نسائية</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-category" value="unisex" id="filter-cat-unisex" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span>عطور مشتركة (يونيسكس)</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-category" value="gifts" id="filter-cat-gifts" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span>بوكسات هدايا ومناسبات</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Ranges Filter -->
+                        <div class="filter-group">
+                            <h4 class="filter-title">الحد الأقصى للسعر</h4>
+                            <div class="filter-options" style="gap: 5px;">
+                                <input type="range" min="100" max="1500" value="1500" class="premium-range" id="filter-price-range" oninput="app.updatePriceFilterLabel(this.value)">
+                                <div style="display:flex; justify-content:space-between; font-size: 0.8rem; margin-top:5px; font-family: var(--font-english); color: var(--text-secondary);">
+                                    <span>100 SAR</span>
+                                    <span><span id="price-range-label">1500</span> SAR</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specific Sizes Filter -->
+                        <div class="filter-group">
+                            <h4 class="filter-title">الحجم المتوفر</h4>
+                            <div class="filter-options">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-size" value="30" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span class="english-num">30 ML</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-size" value="50" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span class="english-num">50 ML</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="filter-size" value="100" onchange="app.filterProducts()">
+                                    <span class="checkbox-box"></span>
+                                    <span class="english-num">100 ML</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn-outline-gold" style="width: 100%; font-size: 0.85rem;" onclick="app.resetAllFilters()">إعادة ضبط الفلاتر</button>
+                    </aside>
+
+                    <!-- Main Products Grid -->
+                    <div>
+                        <div class="product-grid" id="shop-products-grid">
+                            <!-- Dynamic Products List -->
+                        </div>
+                        <div id="shop-no-results" style="display:none; text-align:center; padding:50px; color:var(--text-muted);">
+                            <i class="fa-solid fa-magnifying-glass-minus" style="font-size:3rem; color:var(--border-gold); margin-bottom:15px;"></i>
+                            <p>عذراً، لم نجد أي عطور تطابق خيارات التصفية الخاصة بك.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW: PRODUCT DETAILS ==================== -->
+        <section class="view-section" id="view-product">
+            <div class="section-wrapper" style="margin-top: 30px;">
+                <!-- Breadcrumbs back link -->
+                <button class="btn-outline-gold" style="padding: 8px 20px; font-size: 0.85rem; margin-bottom: 25px;" onclick="app.navigateTo('shop')">
+                    <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i> العودة للمتجر
+                </button>
+                
+                <div class="product-details-container">
+                    <!-- Left: Interactive Gallery -->
+                    <div class="details-gallery">
+                        <div class="gallery-main">
+                            <img src="" alt="اسم العطر" class="gallery-main-img" id="product-details-main-img">
+                        </div>
+                        <div class="gallery-thumbs" id="product-details-thumbs">
+                            <!-- Loaded via JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Specs and purchase logic -->
+                    <div class="details-info">
+                        <span class="product-card-category" id="product-details-cat-label">عطور نسائية</span>
+                        <h1 class="details-title gold-text" id="product-details-title">اسم العطر الفاخر</h1>
+                        
+                        <div class="details-price-bar">
+                            <span class="details-price" id="product-details-price">450.00 ر.س</span>
+                            <div class="product-card-rating" id="product-details-rating-box">
+                                <!-- Dynamically loaded stars -->
+                            </div>
+                        </div>
+                        
+                        <p class="details-desc" id="product-details-desc">وصف تفصيلي مبهر لمكونات العطر ونقائه وفخامة رائحته ومدى ملائمته لمظهرك الراقي والمتميز.</p>
+                        
+                        <!-- Custom Options for Gift Boxes (Hidden by default, shown for gift category) -->
+                        <div class="gift-box-customizer" id="gift-customizer-panel" style="display: none;">
+                            <h4 class="gift-custom-title"><i class="fa-solid fa-gift"></i> تخصيص بوكس الهدايا</h4>
+                            
+                            <div class="form-group-checkout" style="margin-bottom:15px;">
+                                <label>نوع البوكس والمناسبة</label>
+                                <select class="select-premium" id="gift-occasion-select">
+                                    <option value="luxury">بوكس فاخر بقفل مغناطيسي</option>
+                                    <option value="birthday">بوكس مناسبات يوم ميلاد</option>
+                                    <option value="anniversary">بوكس مناسبات ذكرى زواج</option>
+                                    <option value="men">بوكس إهداء رجالي أسود وذهبي</option>
+                                    <option value="women">بوكس إهداء نسائي مخملي</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group-checkout">
+                                <label>اكتب رسالة الإهداء (تُطبع بخط مذهب يدوي)</label>
+                                <textarea placeholder="اكتب هنا العبارة التي تريد إرفاقها بالبوكس..." class="custom-textarea" id="gift-message-input"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Accordion for fragrance notes -->
+                        <!-- Fragrance Notes Display (Visible by Default) -->
+                        <div class="fragrance-notes-display">
+                            <!-- Top Note -->
+                            <div class="note-display-card">
+                                <div class="note-card-header">
+                                    <i class="fa-solid fa-wind note-icon"></i>
+                                    <span id="product-details-note-title-top">مقدمة العطر (Top Notes)</span>
+                                </div>
+                                <div class="note-card-content" id="product-details-note-top">
+                                    البرغموت، الهيل، الليمون الصقلي.
+                                </div>
+                            </div>
+                            
+                            <!-- Heart Note -->
+                            <div class="note-display-card">
+                                <div class="note-card-header">
+                                    <i class="fa-solid fa-heart note-icon"></i>
+                                    <span id="product-details-note-title-heart">قلب العطر (Heart Notes)</span>
+                                </div>
+                                <div class="note-card-content" id="product-details-note-heart">
+                                    الياسمين، الورد التركي، الباتشولي الدافئ.
+                                </div>
+                            </div>
+                            
+                            <!-- Base Note -->
+                            <div class="note-display-card">
+                                <div class="note-card-header">
+                                    <i class="fa-solid fa-gem note-icon"></i>
+                                    <span id="product-details-note-title-base">قاعدة العطر (Base Notes)</span>
+                                </div>
+                                <div class="note-card-content" id="product-details-note-base">
+                                    خشب الصندل، العود، العنبر، مسك الروم.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Size Selector -->
+                        <div class="filter-group">
+                            <h4 class="filter-title">الحجم المتوفر:</h4>
+                            <div class="size-selector" id="product-details-sizes">
+                                <!-- Loaded via JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- Actions Qty and buttons -->
+                        <div class="purchase-actions">
+                            <div class="qty-control">
+                                <button class="qty-btn" onclick="app.adjustDetailsQty(-1)">-</button>
+                                <input type="text" value="1" id="product-details-qty-input" class="qty-input" readonly>
+                                <button class="qty-btn" onclick="app.adjustDetailsQty(1)">+</button>
+                            </div>
+                            
+                            <button class="btn-premium btn-add-cart-large" onclick="app.addActiveProductToCart()">
+                                <i class="fa-solid fa-bag-shopping"></i> إضافة إلى السلة
+                            </button>
+                            
+                            <button class="btn-wishlist-large" id="product-details-wishlist-btn" onclick="app.toggleActiveProductWishlist()">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Related Products Section -->
+                <div class="section-wrapper" style="margin-top: 80px; border-top: 1px solid var(--border-color); padding-top: 60px;">
+                    <div class="section-header">
+                        <h2>عطور ذات صلة</h2>
+                        <p>روائح ونفحات عطرية قد تنال إعجابك أيضاً</p>
+                    </div>
+                    <div class="product-grid" id="product-details-related-grid">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW: ABOUT US ==================== -->
+        <section class="view-section" id="view-about">
+            <div class="info-page-header">
+                <h1 class="gold-text">من نحن | Scent House</h1>
+                <p>تعرف على تاريخ وقيم ورؤية دار العطور الفاخرة</p>
+            </div>
+            
+            <div class="section-wrapper">
+                <div class="about-panel-container" style="grid-template-columns: 1fr 1.2fr;">
+                    <div class="about-panel-text">
+                        <span class="gold-text">نبذة تاريخية</span>
+                        <h3 class="gold-text">قصر يعبر عن جوهر الهوية العطرية الأصيلة</h3>
+                        <p style="font-size:0.95rem;">تأسس دار العطور **Scent House** كعلامة تجارية رائدة وُلدت من شغف حقيقي بإنتاج عطور فريدة لا يطويها النسيان. نحن نسعى لنقل العميل في رحلة حسية راقية تربط الشرق بتقاليده الغنية وعبق دهن العود، بالغرب بابتكاراته الكلاسيكية والمنعشة.</p>
+                        
+                        <h4 class="gold-text" style="margin-top: 20px; font-weight:700;">رؤيتنا</h4>
+                        <p style="font-size:0.95rem;">أن نكون الوجهة الأولى لمتذوقي العطور النادرة والنخبة في الشرق الأوسط، بتقديم جودة ومعايير فخامة لا تُنافس، مع ضمان تجربة اقتناء تسوق ممتعة ومبهرة.</p>
+                        
+                        <h4 class="gold-text" style="margin-top: 20px; font-weight:700;">رسالتنا</h4>
+                        <p style="font-size:0.95rem;">ابتكار خلطات عطرية متميزة تثري حضور العميل وتضفي عليه طابعاً ساحراً يمتد تأثيره طويلاً، باستخدام أفضل المستخلصات النقية والتغليف المذهب الفريد.</p>
+                    </div>
+                    <div class="about-panel-img-box">
+                        <img src="./photo_2026-06-10_19-34-58.jpg" alt="دار عطور Scent House" class="about-panel-img" style="height: 480px;">
+                    </div>
+                </div>
+                
+                <!-- Core Values Cards -->
+                <div class="about-values-grid">
+                    <div class="value-card">
+                        <div class="value-icon"><i class="fa-solid fa-award"></i></div>
+                        <h4 class="value-title gold-text">النزاهة والضمان</h4>
+                        <p class="value-desc">نلتزم بنسبة نقاوة 100% لكافة الخلاصات والزيوت العطرية وضمان الثبات الممتد لأيام.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <div class="value-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h4 class="value-title gold-text">الابتكار والحرفية</h4>
+                        <p class="value-desc">أخصائيو العطور لدينا يمزجون العناصر يدوياً لضمان توليفة حصرية لا تتوفر لدى أي دار آخر.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <div class="value-icon"><i class="fa-solid fa-ribbon"></i></div>
+                        <h4 class="value-title gold-text">الخدمة الملكية</h4>
+                        <p class="value-desc">تغليف البوكسات وتصميم الرسائل والردود تتم بمستوى خدمة يليق بنخبة عملائنا الكرام.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW: CONTACT US ==================== -->
+        <section class="view-section" id="view-contact">
+            <div class="info-page-header">
+                <h1 class="gold-text">تواصل معنا</h1>
+                <p>يسعدنا دائماً سماع آرائكم والإجابة على استفساراتكم على مدار الساعة</p>
+            </div>
+            
+            <div class="section-wrapper">
+                <div class="contact-layout">
+                    <!-- Left: Contact Form -->
+                    <div class="contact-form-card">
+                        <h3 class="gold-text" style="margin-bottom: 25px; font-weight:700;">أرسل لنا استفسارك</h3>
+                        <form id="contact-form-submit" onsubmit="app.handleContactSubmit(event)">
+                            <div class="checkout-form-rows">
+                                <div class="form-row-2col">
+                                    <div class="form-group-checkout">
+                                        <label>الاسم الكامل</label>
+                                        <input type="text" placeholder="مثال: محمد السبيعي" class="premium-input" required id="contact-name">
+                                    </div>
+                                    <div class="form-group-checkout">
+                                        <label>البريد الإلكتروني</label>
+                                        <input type="email" placeholder="name@example.com" class="premium-input" required id="contact-email">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group-checkout">
+                                    <label>رقم الجوال</label>
+                                    <input type="tel" placeholder="05xxxxxxxx" class="premium-input" id="contact-phone">
+                                </div>
+                                
+                                <div class="form-group-checkout">
+                                    <label>عنوان الاستفسار</label>
+                                    <select class="select-premium" id="contact-subject">
+                                        <option value="inquiry">استفسار عام حول العطور</option>
+                                        <option value="order">متابعة شحنة وطلب قائم</option>
+                                        <option value="corporate">طلب كميات وهدايا شركات</option>
+                                        <option value="complaint">تقديم شكوى أو اقتراح</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group-checkout">
+                                    <label>نص الرسالة</label>
+                                    <textarea placeholder="اكتب هنا تفاصيل رسالتك أو استفسارك وسيقوم خبير عطور بالرد عليك..." class="custom-textarea" style="min-height: 120px;" required id="contact-msg"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn-premium" style="margin-top: 10px;">إرسال الرسالة</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Right: Info cards & map placeholder -->
+                    <div class="contact-info-card">
+                        <div class="contact-detail-box">
+                            <div class="contact-detail-icon"><i class="fa-solid fa-phone"></i></div>
+                            <div class="contact-detail-text">
+                                <h5 class="gold-text">الهاتف وخدمة العملاء</h5>
+                                <p class="english-num">+20 11 19935823</p>
+                                <p class="english-num">01005006426</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail-box">
+                            <div class="contact-detail-icon"><i class="fa-solid fa-envelope"></i></div>
+                            <div class="contact-detail-text">
+                                <h5 class="gold-text">البريد الإلكتروني</h5>
+                                <p class="english-num">info@scenthouse.com</p>
+                                <p class="english-num">support@scenthouse.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail-box">
+                            <div class="contact-detail-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="contact-detail-text">
+                                <h5 class="gold-text">الموقع والمقر الرئيسي</h5>
+                                <p>الفيوم مركز طامية خلف مسجد النصر</p>
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">ساعات العمل: السبت - الخميس: 9:00 ص - 10:00 م</p>
+                            </div>
+                        </div>
+
+                        <!-- Social buttons in Contact view -->
+                        <div class="contact-detail-box" style="flex-direction:column; gap:15px;">
+                            <h5 class="gold-text" style="width:100%; border-bottom:1px solid var(--border-color); padding-bottom:8px; font-weight:700;"><i class="fa-solid fa-share-nodes" style="color:var(--primary-gold); margin-left:8px;"></i> تابعنا واشترك معنا</h5>
+                            <div style="display:flex; gap:10px; width:100%; justify-content:center;">
+                                <a href="https://www.facebook.com/share/14eGj7rQq88/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="btn-outline-gold" style="padding:10px 15px; font-size:0.85rem; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fa-brands fa-facebook-f"></i> فيسبوك</a>
+                                <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="btn-outline-gold" style="padding:10px 15px; font-size:0.85rem; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fa-brands fa-instagram"></i> إنستغرام</a>
+                                <a href="https://www.tiktok.com/@scenthouse06?_r=1&_t=ZS-976Aee7qkxs" target="_blank" rel="noopener noreferrer" class="btn-outline-gold" style="padding:10px 15px; font-size:0.85rem; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fa-brands fa-tiktok"></i> تيك توك</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW: CHECKOUT ==================== -->
+        <section class="view-section" id="view-checkout">
+            <div class="info-page-header">
+                <h1 class="gold-text">إتمام الشراء والطلب</h1>
+                <p>يرجى تعبئة التفاصيل بدقة لإرسال باقتك العطرية الفاخرة</p>
+            </div>
+            
+            <div class="section-wrapper">
+                <div class="checkout-grid">
+                    <!-- Left Column: Shipping and billing forms -->
+                    <div class="checkout-card">
+                        <h3 class="checkout-title"><i class="fa-solid fa-truck-ramp-box"></i> معلومات الشحن والتوصيل</h3>
+                        <form id="checkout-main-form" onsubmit="app.handlePlaceOrder(event)">
+                            <div class="checkout-form-rows">
+                                <div class="form-group-checkout">
+                                    <label>الاسم الكامل للمستلم</label>
+                                    <input type="text" placeholder="مثال: أحمد عبد الله الرويلي" class="premium-input" required id="shipping-name">
+                                </div>
+                                
+                                <div class="form-row-2col">
+                                    <div class="form-group-checkout">
+                                        <label>رقم الجوال (للتنسيق مع مندوب التوصيل)</label>
+                                        <input type="tel" placeholder="05xxxxxxxx" class="premium-input" required id="shipping-phone">
+                                    </div>
+                                    <div class="form-group-checkout">
+                                        <label>المدينة</label>
+                                        <select class="select-premium" required id="shipping-city">
+                                            <option value="الفيوم">الفيوم</option>
+                                            <option value="القاهرة">القاهرة</option>
+                                            <option value="الجيزة">الجيزة</option>
+                                            <option value="الإسكندرية">الإسكندرية</option>
+                                            <option value="المنصورة">المنصورة</option>
+                                            <option value="طنطا">طنطا</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group-checkout">
+                                    <label>العنوان السكني وتفاصيل الحي والشارع</label>
+                                    <input type="text" placeholder="مثال: حي الياسمين، شارع العليا العام، مبنى 12، شقة 4" class="premium-input" required id="shipping-address">
+                                </div>
+                                
+                                <h3 class="checkout-title" style="margin-top: 30px;"><i class="fa-regular fa-credit-card"></i> طريقة الدفع المفضلة</h3>
+                                <div class="payment-method-selector">
+                                    <div class="payment-option-btn active" onclick="app.selectPaymentMethod('online', this)">
+                                        <i class="fa-solid fa-globe"></i>
+                                        <span class="payment-option-title">مدى / بطاقة ائتمانية</span>
+                                    </div>
+                                    <div class="payment-option-btn" onclick="app.selectPaymentMethod('applepay', this)">
+                                        <i class="fa-brands fa-apple-pay" style="font-size: 2rem;"></i>
+                                        <span class="payment-option-title">Apple Pay</span>
+                                    </div>
+                                    <div class="payment-option-btn" onclick="app.selectPaymentMethod('cod', this)">
+                                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                                        <span class="payment-option-title">الدفع عند الاستلام</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card info fields placeholder (Shown if credit card active) -->
+                                <div id="card-payment-fields" class="form-row-2col" style="margin-top: 15px;">
+                                    <div class="form-group-checkout" style="grid-column: span 2;">
+                                        <label>رقم البطاقة</label>
+                                        <input type="text" placeholder="4000 1234 5678 9010" class="premium-input english-num" id="pay-card-num">
+                                    </div>
+                                    <div class="form-group-checkout">
+                                        <label>تاريخ الانتهاء</label>
+                                        <input type="text" placeholder="MM/YY" class="premium-input english-num" id="pay-card-exp">
+                                    </div>
+                                    <div class="form-group-checkout">
+                                        <label>رمز التحقق (CVV)</label>
+                                        <input type="password" placeholder="***" class="premium-input english-num" id="pay-card-cvv">
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn-premium" style="margin-top: 30px; font-size:1.1rem; padding: 15px;">تأكيد الطلب وشراء العطور</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Right Column: Order summary calculations -->
+                    <div class="checkout-card" style="height: fit-content;">
+                        <h3 class="checkout-title"><i class="fa-solid fa-receipt"></i> ملخص الطلب</h3>
+                        
+                        <!-- Mini items list -->
+                        <div class="cart-drawer-body" id="checkout-mini-list" style="padding:0; flex-grow:0; border-bottom:1px solid var(--border-color); padding-bottom:20px; max-height: 250px; overflow-y:auto;">
+                            <!-- items -->
+                        </div>
+                        
+                        <div class="order-summary-box" style="margin-top:20px;">
+                            <div class="summary-item-line">
+                                <span>سعر المنتجات:</span>
+                                <span class="val"><span id="checkout-subtotal">0.00</span> ر.س</span>
+                            </div>
+                            <div class="summary-item-line" id="checkout-discount-row" style="display:none; color:#2ecc71;">
+                                <span>كود الخصم المطبق:</span>
+                                <span class="val">-<span id="checkout-discount">0.00</span> ر.س</span>
+                            </div>
+                            <div class="summary-item-line">
+                                <span>ضريبة القيمة المضافة (15%):</span>
+                                <span class="val"><span id="checkout-vat">0.00</span> ر.س</span>
+                            </div>
+                            <div class="summary-item-line">
+                                <span>تكلفة الشحن والتغليف الفاخر:</span>
+                                <span class="val" style="color: #2ecc71;">مجاني</span>
+                            </div>
+                            <div class="summary-item-line total">
+                                <span>المجموع الإجمالي:</span>
+                                <span class="val"><span id="checkout-total">0.00</span> ر.س</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW: INVOICE / ORDER SUCCESS ==================== -->
+        <section class="view-section" id="view-success">
+            <div class="section-wrapper">
+                <div class="invoice-success-box">
+                    <div class="success-icon-badge"><i class="fa-solid fa-check"></i></div>
+                    <h2 class="gold-text" style="font-weight: 800; margin-bottom: 10px;">تم تسجيل طلبك بنجاح!</h2>
+                    <p style="color:var(--text-secondary); font-size:1.05rem;">شكراً لاختيارك Scent House. تم إرسال فاتورة تفصيلية ورسالة شحن مؤقتة لهاتفك المحمول وجاري تحضير الباقة العطرية.</p>
+                    
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:6px; padding:20px; margin:25px 0; text-align:right;">
+                        <h4 class="gold-text" style="margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">تفاصيل الفاتورة الإلكترونية:</h4>
+                        <div class="cart-summary-line"><span style="font-size:0.9rem;">رقم الفاتورة:</span><span class="english-num" id="invoice-num" style="font-weight:700; color:var(--primary-gold);">#SH-98471</span></div>
+                        <div class="cart-summary-line"><span style="font-size:0.9rem;">تاريخ المعاملة:</span><span class="english-num" id="invoice-date">10-06-2026</span></div>
+                        <div class="cart-summary-line"><span style="font-size:0.9rem;">العميل المستلم:</span><span id="invoice-client-name">أحمد عبد الله الرويلي</span></div>
+                        <div class="cart-summary-line"><span style="font-size:0.9rem;">طريقة الدفع:</span><span id="invoice-payment-method">مدى / بطاقة ائتمانية</span></div>
+                    </div>
+
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>العطر</th>
+                                <th>الحجم</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoice-items-table">
+                            <!-- JS populated rows -->
+                        </tbody>
+                    </table>
+
+                    <div style="border-top:1px solid var(--border-color); padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:700;">المجموع الكلي للفاتورة:</span>
+                        <span class="gold-text" style="font-size:1.35rem; font-weight:800; font-family:var(--font-english);"><span id="invoice-total-val">0.00</span> ر.س</span>
+                    </div>
+
+                    <button class="btn-premium" style="margin-top:35px; width:100%;" onclick="app.navigateTo('home')">العودة للرئيسية ومتابعة التسوق</button>
+                </div>
+            </div>
+        </section>
+
+
+            </main>
+
+    <!-- Global Floating Toast Container -->
+    <div class="toast-container" id="toast-messages-container"></div>
+
+    <!-- Luxury Footer -->
+    <footer>
+        <div class="footer-container">
+            <!-- Brand description -->
+            <div class="footer-column">
+                <div class="logo-container" style="margin-bottom: 20px;">
+                    <img src="./m.jpg" alt="Scent House Logo" style="height:40px;" onerror="this.src='https://placehold.co/100x100/121212/D4AF37?text=Scent+House'">
+                    <span class="brand-title gold-text">SCENT HOUSE</span>
+                </div>
+                <p>مفهوم جديد لبيع واقتناء أرقى زجاجات العطور النخبوية والزيوت العطرية النقية في الشرق الأوسط. نحن نضمن لك فخامة لا تُنسى في كل رشة.</p>
+            </div>
+            
+            <!-- Quick Links navigation -->
+            <div class="footer-column">
+                <h4>روابط سريعة</h4>
+                <ul>
+                    <li><a onclick="app.navigateTo('home')">الرئيسية</a></li>
+                    <li><a onclick="app.navigateTo('shop')">المتجر وعطور الدار</a></li>
+                    <li><a onclick="app.navigateToCategory('gifts')">بوكسات الهدايا الفاخرة</a></li>
+                    <li><a onclick="app.navigateTo('about')">من نحن والقصة</a></li>
+                    <li><a onclick="app.navigateTo('contact')">اتصل بنا وادعم استفسارك</a></li>
+                </ul>
+            </div>
+            
+            <!-- Categories info -->
+            <div class="footer-column">
+                <h4>عطور ومجموعات</h4>
+                <ul>
+                    <li><a onclick="app.navigateToCategory('men')">العطور الرجالية الفخمة</a></li>
+                    <li><a onclick="app.navigateToCategory('women')">العطور النسائية الساحرة</a></li>
+                    <li><a onclick="app.navigateToCategory('unisex')">العطور المشتركة الدافئة</a></li>
+                    <li><a onclick="app.navigateToCategory('gifts')">بوكسات المناسبات المخصصة</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contact placeholder -->
+            <div class="footer-column">
+                <h4>اتصل بالدار</h4>
+                <ul class="contact-info-list">
+                    <li><i class="fa-solid fa-location-dot"></i> <span>الفيوم مركز طامية خلف مسجد النصر</span></li>
+                    <li><i class="fa-solid fa-phone"></i> <span class="english-num">+20 11 19935823</span></li>
+                    <li><i class="fa-solid fa-phone"></i> <span class="english-num">01005006426</span></li>
+                    <li><i class="fa-solid fa-envelope"></i> <span class="english-num">support@scenthouse.com</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Bottom bar copyright -->
+        <div class="footer-bottom">
+            <div class="footer-copy">
+                &copy; <span class="english-num">2026</span> جميع الحقوق محفوظة لـ <span class="gold-text">دار العطور - Scent House</span>.
+            </div>
+            
+            <!-- Footer Social Media Links -->
+            <div style="display:flex; gap:15px; font-size:1.1rem; align-items:center;">
+                <span style="font-size:0.8rem; color:var(--text-muted);">تابعنا:</span>
+                <a href="https://www.facebook.com/share/14eGj7rQq88/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" style="color:var(--text-muted); transition:var(--transition-quick);" title="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" style="color:var(--text-muted); transition:var(--transition-quick);" title="إنستغرام"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@scenthouse06?_r=1&_t=ZS-976Aee7qkxs" target="_blank" rel="noopener noreferrer" style="color:var(--text-muted); transition:var(--transition-quick);" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+
+            <!-- Trust badges / payment mock icons -->
+            <div class="footer-payments">
+                <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+                <i class="fa-brands fa-apple-pay" title="Apple Pay"></i>
+                <i class="fa-solid fa-credit-card" title="Mada"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Social Shortcuts -->
+    <div class="floating-social-bar">
+        <a href="https://wa.me/201119935823" target="_blank" rel="noopener noreferrer" class="floating-social-btn" title="تواصل عبر الواتساب" style="background:#25D366; color:#fff; border-color:#25D366;">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="https://www.instagram.com/scent.house9?igsh=MThtbXFzODVuYzNhZg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="floating-social-btn" title="تابعنا على إنستغرام">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="https://www.tiktok.com/@scenthouse06?_r=1&_t=ZS-976Aee7qkxs" target="_blank" rel="noopener noreferrer" class="floating-social-btn" title="تابعنا على تيك توك">
+            <i class="fa-brands fa-tiktok"></i>
+        </a>
+    </div>
+
+    <!-- App Logic Script -->
+    <script src="./app.js"></script>
+</body>
+</html>
